@@ -1,0 +1,17 @@
+<?php
+
+namespace {{ namespace }};
+
+use Illuminate\Support\Facades\Log;
+
+class {{ class }}
+{
+    public function handle(){
+        try {
+
+        } catch (\Throwable $th) {
+            Log::error('{{ class }} : ' . $th->getMessage());
+            throw new \Exception($th->getMessage());
+        }
+    }
+}
