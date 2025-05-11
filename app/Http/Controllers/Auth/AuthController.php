@@ -29,7 +29,7 @@ class AuthController extends Controller
                     'token' => $token,
                 ]
             );
-        });
+        }, $request);
     }
 
     public function logout()

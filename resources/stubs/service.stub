@@ -3,9 +3,13 @@
 namespace {{ namespace }};
 
 use Illuminate\Support\Facades\Log;
+use App\Contracts\LogAutoConfig;
+use App\Traits\Loggable;
 
-class {{ class }}
+class {{ class }} implements LogAutoConfig
 {
+    use Loggable;
+
     public function handle(){
         try {
 
