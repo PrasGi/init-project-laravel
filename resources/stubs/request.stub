@@ -19,8 +19,6 @@ class {{ class }} extends FormRequest
         throw new HttpResponseException(
             response: ResponseHelper::error(
                 message: 'Validation error',
-                status_code: 422,
-                data: [],
                 errors: $validator->errors()
             )
         );

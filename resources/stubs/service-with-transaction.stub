@@ -2,14 +2,18 @@
 
 namespace {{ namespace }};
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class {{ class }}
 {
     public function handle(){
         try {
+            DB::beginTransaction();
 
+            DB::commit();
         } catch (\Throwable $th) {
+            DB::rollBack();
             Log::error('{{ class }} : ' . $th->getMessage());
             throw new \Exception($th->getMessage());
         }

@@ -3,7 +3,7 @@
 namespace App\Helpers;
 
 class ResponseHelper {
-    public static function success($message = 'Success', $data, $status_code = 200, $status = true)
+    public static function success($message = 'Success', $data = null, $status_code = 200, $status = true)
     {
         return response()->json([
             'status' => $status,

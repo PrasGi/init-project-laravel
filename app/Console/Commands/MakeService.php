@@ -10,15 +10,11 @@ class MakeService extends Command
 {
     /**
      * The name and signature of the console command.
-     *
-     * @var string
      */
-    protected $signature = 'make:service {name}';
+    protected $signature = 'make:service {name} {--with-transaction}';
 
     /**
      * The console command description.
-     *
-     * @var string
      */
     protected $description = 'Create a new service class';
 
@@ -28,21 +24,18 @@ class MakeService extends Command
     public function handle()
     {
         $name = $this->argument('name');
-        $path = app_path("Http/Services/{$name}.php");
+        $withTransaction = $this->option('with-transaction');
 
-        // Extract directory from the provided name
+        $path = app_path("Http/Services/{$name}.php");
         $directory = dirname($path);
 
-        // Check if the file already exists
         if (File::exists($path)) {
             $this->error("Service already exists at {$path}!");
             return 1;
         }
 
-        // Create directory if it does not exist
         File::ensureDirectoryExists($directory);
 
-        // Determine the namespace based on the directory structure
         $namespace = 'App\\Http\\Services';
         $relativePath = Str::replaceFirst(app_path() . DIRECTORY_SEPARATOR, '', $directory);
         $namespacePart = trim(Str::replaceFirst('Http/Services', '', str_replace(DIRECTORY_SEPARATOR, '/', $relativePath)), '/');
@@ -50,11 +43,19 @@ class MakeService extends Command
             $namespace .= '\\' . str_replace('/', '\\', $namespacePart);
         }
 
-        // Load the stub file and replace the placeholders
-        $stub = file_get_contents(resource_path('stubs/service.stub'));
+        // Pilih stub sesuai opsi
+        $stubFile = $withTransaction
+            ? resource_path('stubs/service-with-transaction.stub')
+            : resource_path('stubs/service.stub');
+
+        if (!File::exists($stubFile)) {
+            $this->error("Stub file not found: {$stubFile}");
+            return 1;
+        }
+
+        $stub = file_get_contents($stubFile);
         $stub = str_replace(['{{ namespace }}', '{{ class }}'], [$namespace, class_basename($name)], $stub);
 
-        // Create the service file
         File::put($path, $stub);
 
         $this->info("Service created successfully at {$path}.");
